@@ -1,4 +1,4 @@
-# progett_neo4j
+# progetto_neo4j
 L'obbiettivo del progetto è creare un'applicazione per la Polizia Postale.
 
 ## 1. Clonazione della repo 

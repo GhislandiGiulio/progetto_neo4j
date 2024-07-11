@@ -1,0 +1,20 @@
+oggetto Sim:
+    - phone_number
+    - owner
+    - ICCID
+
+oggetto Cell:
+    - phone_operator
+    - power
+    - action_range
+    - location
+
+oggetto User:
+    - name
+    - surname
+    - birth_date
+
+Relations: 
+    - OWNED_BY (sim -> user)
+    - CONNECTED TO (sim -> cell):
+        - date_hour

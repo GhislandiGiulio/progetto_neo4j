@@ -12,6 +12,7 @@ class Cells_db:
         # creazione del driver
         self.driver = neo4j.GraphDatabase.driver(uri, auth=(username, password))
         self.driver.verify_connectivity()
+        print("Connection established")
 
         # nome del db sul server (default)
         self.database = "neo4j"

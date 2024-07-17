@@ -6,6 +6,9 @@ import pwinput
 # importazione funzioni db
 import db
 
+# inizializzazione driver db
+cells_db = db.Cells_db()
+
 # wrapper delle funzioni schermata
 def schermata(f):
     def wrapper(*args, **kwargs):
@@ -19,7 +22,7 @@ def schermata(f):
             # Per Unix/Linux/macOS
             os.system('clear')
 
-        print("Portale di ricerca collegamenti a celle")
+        print("Portale di ricerca collegamenti SIM della rete mobile.")
 
         print("\n")
         
@@ -52,11 +55,11 @@ def checked_input(sentence: str):
 @schermata
 def menu():
 
-    scelta = checked_input("Inserisci un'opzione\n 1- Login\n q- Esci\n\nScelta: ")
+    scelta = checked_input("Inserisci un'opzione\n 1- Mostra elenchi\n 2- \n q- Esci\n\nScelta: ")
 
     match scelta:
         case 1:
-            # ricerca
+            mostra_elenco()
             pass
 
         case 2:
@@ -75,6 +78,80 @@ def menu():
         case "_":
             # ricerca
             pass
+
+@schermata
+def mostra_elenco():
+
+    while True:
+
+        try: 
+            scelta = input("Scegli quale lista mostrare :\n 1- Utenti\n 2- Celle\n 3- Sim\n q- Torna al menu principale\n")
+            break
+
+        except Exception:
+
+            print("Input non valido. Riprova")
+            continue
+    
+    match scelta:
+
+        case "1":
+            mostra_match("user")
+
+        case "2":
+            mostra_match("cell")
+
+        case "3":
+            mostra_match("sim")
+
+        case "q":
+            return
+        
+        case "_":
+            print("Opzione non valida")
+            input("Premi 'invio' per tornare al menu precedente...")
+
+
+@schermata
+def mostra_match(node_type):
+        
+    match node_type:
+        
+        case "sim":
+            records = cells_db.match_sims()
+        case "cell":    
+            records = cells_db.match_cells()
+        case "user":
+            records = cells_db.match_users()
+    
+    
+    print("Elenco di {tipologia}:\n")
+
+    for record in records:
+
+        print("------------------------------------------------")
+
+        for key in record.keys():
+            print(f"{key}: {record.get(key)}")
+
+    input("Premi 'invio' per tornare al menu precedente...")
+
+@schermata
+def mostra_utenti():
+
+    print("Elenco degli utenti:\n")
+
+    
+    records = cells_db.match_users()
+
+    for record in records:
+
+        print("------------------------------------------------")
+
+        for key in record.keys():
+            print(f"{key}: {record.get(key)}")
+
+    input("Premi 'invio' per tornare al menu precedente...")
 
 
 if __name__ == '__main__':

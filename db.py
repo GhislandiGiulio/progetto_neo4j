@@ -25,14 +25,16 @@ class Cells_db:
 
         if date:
             query = """ MATCH (p:Cell {date: $date}) 
-                        RETURN  p.action_range as action_range, 
+                        RETURN  p.id as id,
+                                p.action_range as action_range, 
                                 p.latitude as latitude, 
                                 p.longitude as longitude,
                                 p.power as power"""
         else:
 
             query =  """ MATCH (p:Cell) 
-                        RETURN  p.action_range as action_range, 
+                        RETURN  p.id as id,
+                                p.action_range as action_range, 
                                 p.latitude as latitude, 
                                 p.longitude as longitude,
                                 p.power as power"""
@@ -51,12 +53,14 @@ class Cells_db:
 
         if name:
             query = """ MATCH (p:User {name: $name}) 
-                        RETURN  p.name as name, 
+                        RETURN  p.id as id,
+                                p.name as name, 
                                 p.birth_date as birth_date"""
         else:
 
             query =  """ MATCH (p:User) 
-                        RETURN  p.name as name, 
+                        RETURN  p.id as id,
+                                p.name as name, 
                                 p.birth_date as birth_date"""
         
             
@@ -73,11 +77,13 @@ class Cells_db:
 
         if phone_number:
             query = """ MATCH (p:Sim {phone_number: $phone_number}) 
-                        RETURN  p.phone_number as phone_number"""
+                        RETURN  p.id as id,
+                                p.phone_number as phone_number"""
         else:
 
             query =  """ MATCH (p:Sim) 
-                        RETURN  p.phone_number as phone_number"""
+                        RETURN  p.id as id,
+                                p.phone_number as phone_number"""
         
             
         records, summary, keys = self.driver.execute_query(

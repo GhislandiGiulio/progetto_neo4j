@@ -198,10 +198,18 @@ def mostra_sospetti(records):
     input("Premi 'invio' per tornare al menu...")
 
 def is_valid_latitude(lat):
-    return -90 <= lat <= 90
+    try:
+        lat = float(lat)
+        return -90 <= lat <= 90
+    except ValueError:
+        return False
 
 def is_valid_longitude(lon):
-    return -180 <= lon <= 180
+    try:
+        lon = float(lon)
+        return -180 <= lon <= 180
+    except ValueError:
+        return False
 
 def get_valid_latitude_longitude():
     while True:

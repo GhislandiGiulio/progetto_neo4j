@@ -69,4 +69,4 @@ docker run `
 ```
 
 ## 7. Inizializzazione del db
-Se hai accesso al db, puoi eseguire lo script "inizializza_dataset.py" per inizializzare il db con 33 concerti con cui testare lo script principale.
+Se hai accesso al db, puoi eseguire lo script "init_dataset.py" per inizializzare il db con celle, user, sim e collegamenti fra loro random.

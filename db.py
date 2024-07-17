@@ -87,16 +87,17 @@ class Cells_db:
     def find_connection_near_location(self, latitude, longitude, from_datehour, distance):
 
         query =  """MATCH (c:Cell)<-[con:CONNECTED_TO]-(s:Sim)-[:OWNED_BY]->(u:User)
-                    WHERE distance(c.location, point({latitude: $latitude, longitude: $longitude})) < $distance
-                    AND c.connection_datehour >= $from_datehour
-                    RETURN u.name AS name, s.phone_number AS phone_number"""
+                    WHERE point.distance(c.location, point({latitude: 45.0, longitude: 9.0})) < $distance
+                    AND con.connection_datehour >= $from_datehour
+                    RETURN u.name AS name, s.phone_number AS phone_number, con.connection_datehour AS datehour
+                    """
         
         records, summary, keys = self.driver.execute_query(
                                                             query,
                                                             from_datehour=from_datehour,
                                                             latitude=latitude,
                                                             longitude=longitude,
-                                                            distance=distance,
+                                                            distance=distance*1000,
                                                             database_=self.database
                                                         )
         

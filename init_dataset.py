@@ -1,4 +1,5 @@
 import random
+from uuid import uuid4
 from neo4j import GraphDatabase
 
 import db
@@ -85,17 +86,20 @@ def random_datehour():
     return datehour
 
 def create_sim(tx, sim):
-    tx.run("CREATE (s:Sim {phone_number: $phone_number})", phone_number=sim.phone_number)
+    sim_id = str(uuid4())
+    tx.run("CREATE (s:Sim {id:$id, phone_number: $phone_number})", id=sim_id, phone_number=sim.phone_number)
 
 def create_cell(tx, cell):
+    cell_id = str(uuid4())  # Generate a unique ID for each cell
     tx.run(
-        "CREATE (c:Cell {operator: $operator, power: $power, action_range: $action_range, latitude: $latitude, longitude: $longitude})",
-        operator=cell.operator, power=cell.power, action_range=cell.action_range,
+        "CREATE (c:Cell {id: $id, operator: $operator, power: $power, action_range: $action_range, latitude: $latitude, longitude: $longitude})",
+        id=cell_id, operator=cell.operator, power=cell.power, action_range=cell.action_range,
         latitude=cell.location[0], longitude=cell.location[1]
     )
 
 def create_user(tx, user):
-    tx.run("CREATE (u:User {name: $name, birth_date: $birth_date})", name=user.name, birth_date=user.birth_date)
+    user_id = str(uuid4())  # Generate a unique ID for each cell
+    tx.run("CREATE (u:User {id:$id, name: $name, birth_date: $birth_date})", id=user_id, name=user.name, birth_date=user.birth_date)
 
 def create_owned_by(tx, sim, user):
     tx.run(

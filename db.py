@@ -18,16 +18,75 @@ class Cells_db:
         self.database = "neo4j"
 
 
-    def get_nodes(self):
+    def match_cells(self, date=None):
 
         # dalla guida ufficiale online: 
         # " Do not hardcode or concatenate parameters: use placeholders and specify the parameters as keyword arguments. "
+
+        if date:
+            query = """ MATCH (p:Cell {date: $date}) 
+                        RETURN  p.action_range as action_range, 
+                                p.latitude as latitude, 
+                                p.longitude as longitude,
+                                p.power as power"""
+        else:
+
+            query =  """ MATCH (p:Cell) 
+                        RETURN  p.action_range as action_range, 
+                                p.latitude as latitude, 
+                                p.longitude as longitude,
+                                p.power as power"""
         
+            
         records, summary, keys = self.driver.execute_query(
-                                                            "MATCH (p:Person {age: $age}) RETURN p.name AS name",
-                                                            age=42,
+                                                            query,
+                                                            date=date,
                                                             database_=self.database,
                                                         )
+        
+        return records
+    
+    def match_users(self, name=None):
+
+
+        if name:
+            query = """ MATCH (p:User {name: $name}) 
+                        RETURN  p.name as name, 
+                                p.birth_date as birth_date"""
+        else:
+
+            query =  """ MATCH (p:User) 
+                        RETURN  p.name as name, 
+                                p.birth_date as birth_date"""
+        
+            
+        records, summary, keys = self.driver.execute_query(
+                                                            query,
+                                                            name=name,
+                                                            database_=self.database,
+                                                        )
+        
+        return records
+    
+    def match_sims(self, phone_number=None):
+
+
+        if phone_number:
+            query = """ MATCH (p:Sim {phone_number: $phone_number}) 
+                        RETURN  p.phone_number as phone_number"""
+        else:
+
+            query =  """ MATCH (p:Sim) 
+                        RETURN  p.phone_number as phone_number"""
+        
+            
+        records, summary, keys = self.driver.execute_query(
+                                                            query,
+                                                            phone_number=phone_number,
+                                                            database_=self.database,
+                                                        )
+        
+        return records
 
 if __name__ == "__main__":
 

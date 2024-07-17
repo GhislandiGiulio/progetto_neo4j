@@ -55,30 +55,27 @@ def checked_input(sentence: str):
 @schermata
 def menu():
 
-    scelta = checked_input("Inserisci un'opzione\n 1- Mostra elenchi\n 2- Ricerca utente sospetto\n q- Esci\n\nScelta: ")
+    scelta = checked_input("Inserisci un'opzione\n 1- Mostra elenchi\n 2- Ricerca utente sospetto\n 3- Ricerca per cella\n 4- Ricerca per vicinanza\n q- Esci\n\nScelta: ")
 
     match scelta:
         case 1:
             mostra_elenco()
-            pass
 
         case 2:
             ricerca_user_sospetto()
-            pass
 
         case 3:
-            localizzazione_persona()
-            pass
+            ricerca_persone_per_cella()
 
         case 4:
-            ricerca_per_luogo()
+            ricerca_per_vicinanza()
 
         case "q":
             print("Uscita dal programma in corso...")
             time.sleep(1)
             exit(0)
 
-        case "_":
+        case _:
             print("Opzione non valida")
             input("Premi 'invio' per tornare al menu precedente...")
 
@@ -235,7 +232,7 @@ def get_valid_latitude_longitude():
             print("Input non valido. Inserisci dei numeri.")
 
 @schermata
-def ricerca_per_luogo():
+def ricerca_per_vicinanza():
     
     print("Interfaccia di ricerca per luogo\n\nLascia vuoto in qualsiasi momento per tornare al menu...")
 
@@ -279,7 +276,7 @@ def ricerca_per_luogo():
     
 
 @schermata
-def persone_nella_cella():
+def ricerca_persone_per_cella():
     cell_id = input("A quale cella sei interessato? ")
     data_ora = input("In quale data / orario? (YYYY-MM-DD HH:MM) ")
 
@@ -288,16 +285,14 @@ def persone_nella_cella():
         input("Premi 'invio' per tornare al menu precedente...")
         return
 
-    records = cells_db.find_people_in_cell(cell_id, data_ora)
+    records = cells_db.find_people_from_cell(cell_id, data_ora)
     
-    if records:
-        print("Le SIM collegate alla cella sono:")
-        for record in records:
-            print(f"• {record['nome']} (con numero {record['numero']})")
-    else:
-        print("Nessuna SIM trovata nella cella per la data/ora specificata.")
+    # se trovati risultati, mostrali
+    if records == []:
+        print("Non sono stati trovati risultati.")
+        input("Premi 'invio' per tornare al menu...")
     
-    input("Premi 'invio' per tornare al menu precedente...")
+    mostra_sospetti(records)
 
 
 if __name__ == '__main__':

@@ -77,7 +77,7 @@ def random_birth_date():
     return f"{year}-{month:02d}-{day:02d}"
 
 def random_datehour():
-    year = random.randint(1950, 2023)
+    year = random.randint(2022, 2024)
     month = random.randint(1, 12)
     day = random.randint(1, 28)
     hour = random.randint(0, 23)
@@ -92,7 +92,7 @@ def create_sim(tx, sim):
 def create_cell(tx, cell):
     cell_id = str(uuid4())  # Generate a unique ID for each cell
     tx.run(
-        "CREATE (c:Cell {id: $id, operator: $operator, power: $power, action_range: $action_range, latitude: $latitude, longitude: $longitude})",
+        "CREATE (c:Cell {id: $id, operator: $operator, power: $power, action_range: $action_range, location: point({latitude: $latitude, longitude: $longitude})})",
         id=cell_id, operator=cell.operator, power=cell.power, action_range=cell.action_range,
         latitude=cell.location[0], longitude=cell.location[1]
     )
@@ -110,9 +110,12 @@ def create_owned_by(tx, sim, user):
 
 def create_connected_to(tx, sim, cell, connection_datehour):
     tx.run(
-        "MATCH (s:Sim {phone_number: $phone_number}), (c:Cell {operator: $operator, latitude: $latitude, longitude: $longitude}) "
+        "MATCH (s:Sim {phone_number: $phone_number}), (c:Cell {operator: $operator, location: point({latitude: $latitude, longitude: $longitude})}) "
         "CREATE (s)-[:CONNECTED_TO {connection_datehour: $connection_datehour}]->(c)",
-        phone_number=sim.phone_number, operator=cell.operator, latitude=cell.location[0], longitude=cell.location[1],
+        phone_number=sim.phone_number, 
+        operator=cell.operator, 
+        latitude=cell.location[0], 
+        longitude=cell.location[1],
         connection_datehour=connection_datehour
     )
 

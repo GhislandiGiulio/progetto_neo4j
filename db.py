@@ -89,7 +89,7 @@ class Cells_db:
         query =  """MATCH (c:Cell)<-[con:CONNECTED_TO]-(s:Sim)-[:OWNED_BY]->(u:User)
                     WHERE point.distance(c.location, point({latitude: $latitude, longitude: $longitude})) < $distance
                     AND con.connection_datehour >= $from_datehour
-                    RETURN u.name AS name, s.phone_number AS phone_number, con.connection_datehour AS datehour
+                    RETURN u.name AS name, s.phone_number AS phone_number
                     """
         
         records, summary, keys = self.driver.execute_query(
@@ -106,9 +106,10 @@ class Cells_db:
     def find_people_from_cell(self, cell_id, from_datehour):
 
         query =  """MATCH (c:Cell)<-[con:CONNECTED_TO]-(s:Sim)-[:OWNED_BY]->(u:User)
-                    WHERE u.name STARTS WITH $prefix
-                    AND c.connection_datehour >= $from_datehour AND c.connection_datehour <= $to_datehour
-                    RETURN s.phone_number AS phone_number, u.name AS name, c.connection_datehour AS datehour"""
+                    WHERE c.id = $cell_id
+                    AND con.connection_datehour >= $from_datehour
+                    RETURN s.phone_number AS phone_number, u.name AS name
+                    """
         
         records, summary, keys = self.driver.execute_query(
                                                             query,

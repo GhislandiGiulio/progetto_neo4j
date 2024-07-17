@@ -18,78 +18,68 @@ class Cells_db:
         self.database = "neo4j"
 
 
-    def match_cells(self, date=None):
+    def match_cells(self):
 
         # dalla guida ufficiale online: 
         # " Do not hardcode or concatenate parameters: use placeholders and specify the parameters as keyword arguments. "
 
-        if date:
-            query = """ MATCH (p:Cell {date: $date}) 
-                        RETURN  p.id as id,
-                                p.action_range as action_range, 
-                                p.latitude as latitude, 
-                                p.longitude as longitude,
-                                p.power as power"""
-        else:
-
-            query =  """ MATCH (p:Cell) 
-                        RETURN  p.id as id,
-                                p.action_range as action_range, 
-                                p.latitude as latitude, 
-                                p.longitude as longitude,
-                                p.power as power"""
-        
+        query =  """ MATCH (p:Cell) 
+                    RETURN  p.id as id,
+                            p.action_range as action_range, 
+                            p.latitude as latitude, 
+                            p.longitude as longitude,
+                            p.power as power"""
+    
             
         records, summary, keys = self.driver.execute_query(
                                                             query,
-                                                            date=date,
                                                             database_=self.database,
                                                         )
         
         return records
     
-    def match_users(self, name=None):
+    def match_users(self):
 
-
-        if name:
-            query = """ MATCH (p:User {name: $name}) 
-                        RETURN  p.id as id,
-                                p.name as name, 
-                                p.birth_date as birth_date"""
-        else:
-
-            query =  """ MATCH (p:User) 
-                        RETURN  p.id as id,
-                                p.name as name, 
-                                p.birth_date as birth_date"""
+        query =  """ MATCH (p:User) 
+                    RETURN  p.id as id,
+                            p.name as name, 
+                            p.birth_date as birth_date"""
         
             
         records, summary, keys = self.driver.execute_query(
                                                             query,
-                                                            name=name,
                                                             database_=self.database,
                                                         )
         
         return records
     
-    def match_sims(self, phone_number=None):
+    def match_sims(self):
 
-
-        if phone_number:
-            query = """ MATCH (p:Sim {phone_number: $phone_number}) 
-                        RETURN  p.id as id,
-                                p.phone_number as phone_number"""
-        else:
-
-            query =  """ MATCH (p:Sim) 
-                        RETURN  p.id as id,
-                                p.phone_number as phone_number"""
+        query =  """ MATCH (p:Sim) 
+                    RETURN  p.id as id,
+                            p.phone_number as phone_number"""
         
             
         records, summary, keys = self.driver.execute_query(
                                                             query,
-                                                            phone_number=phone_number,
                                                             database_=self.database,
+                                                        )
+        
+        return records
+    
+    def find_suspect(self, name, from_datehour, to_datehour):
+
+        query =  """MATCH (:Cell)<-[c:CONNECTED_TO]-(s:Sim)-[:OWNED_BY]->(u:User)
+                    WHERE u.name STARTS WITH $prefix
+                    AND c.connection_datehour >= $from_datehour AND c.connection_datehour <= $to_datehour
+                    RETURN s.phone_number AS phone_number, u.name AS name, c.connection_datehour AS datehour"""
+        
+        records, summary, keys = self.driver.execute_query(
+                                                            query,
+                                                            prefix=name,
+                                                            from_datehour=from_datehour,
+                                                            to_datehour=to_datehour,
+                                                            database_=self.database
                                                         )
         
         return records

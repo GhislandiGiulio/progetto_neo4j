@@ -55,7 +55,7 @@ def checked_input(sentence: str):
 @schermata
 def menu():
 
-    scelta = checked_input("Inserisci un'opzione\n 1- Mostra elenchi\n 2- \n q- Esci\n\nScelta: ")
+    scelta = checked_input("Inserisci un'opzione\n 1- Mostra elenchi\n 2- Ricerca utente sospetto\n q- Esci\n\nScelta: ")
 
     match scelta:
         case 1:
@@ -63,7 +63,7 @@ def menu():
             pass
 
         case 2:
-            # ricerca
+            ricerca_user_sospetto()
             pass
 
         case 3:
@@ -81,27 +81,18 @@ def menu():
 
 @schermata
 def mostra_elenco():
-
-    while True:
-
-        try: 
-            scelta = input("Scegli quale lista mostrare :\n 1- Utenti\n 2- Celle\n 3- Sim\n q- Torna al menu principale\n")
-            break
-
-        except Exception:
-
-            print("Input non valido. Riprova")
-            continue
+    
+    scelta = checked_input("Scegli quale lista mostrare :\n 1- Utenti\n 2- Celle\n 3- Sim\n q- Torna al menu principale\n")
     
     match scelta:
 
-        case "1":
+        case 1:
             mostra_match("user")
 
-        case "2":
+        case 2:
             mostra_match("cell")
 
-        case "3":
+        case 3:
             mostra_match("sim")
 
         case "q":
@@ -109,7 +100,7 @@ def mostra_elenco():
         
         case "_":
             print("Opzione non valida")
-            input("Premi 'invio' per tornare al menu precedente...")
+            input("Premi 'invio' per tornare al menu...")
 
 
 @schermata
@@ -134,7 +125,74 @@ def mostra_match(node_type):
         for key in record.keys():
             print(f"{key}: {record.get(key)}")
 
-    input("Premi 'invio' per tornare al menu precedente...")
+    input("Premi 'invio' per tornare al menu...")
+
+def validate_datehour_format(datehour):
+    try:
+        datetime.strptime(datehour, "%Y-%m-%d %H:%M")
+        return True
+    except ValueError:
+        return False
+
+@schermata
+def ricerca_user_sospetto():
+
+    print("Interfaccia di ricerca di un sospetto\n\nLascia vuoto in qualsiasi momento per tornare al menu...")
+
+    # input di nome sospetto
+    nome = input("A quale nominativo sei interessato? (case-sensitive): ")
+
+    # ritorno al menu se vuoto
+    if nome == "":
+        return
+    
+    # input di dataora minima
+    while True:
+        from_datehour = input("Inserisci la prima (YYYY-MM-DD HH:MM): ")
+
+        if from_datehour == "":
+            return
+
+        if validate_datehour_format(from_datehour):
+            break
+        else:
+            print("Formato non valido.")
+
+    # input di dataora massima
+    while True:
+        to_datehour = input("Inserisci la prima (YYYY-MM-DD HH:MM): ")
+
+        if to_datehour == "":
+            return
+
+        if validate_datehour_format(to_datehour):
+            break
+        else:
+            print("Formato non valido.")
+
+    # esecuzione query
+    records = cells_db.find_suspect(nome, from_datehour, to_datehour)
+
+    # se trovati risultati, mostrali
+    if records == []:
+        print("Non sono stati trovati risultati.")
+        input("Premi 'invio' per tornare al menu...")
+    
+    mostra_sospetti(records)
+
+
+@schermata
+def mostra_sospetti(records):
+    
+    print("Elenco delle connsessioni sospette:\n")
+
+    for record in records:
+        print("------------------------------------------------")
+        for key in record.keys():
+            print(f"{key}: {record.get(key)}")
+        print("\n")
+
+    input("Premi 'invio' per tornare al menu...")
 
 
 if __name__ == '__main__':

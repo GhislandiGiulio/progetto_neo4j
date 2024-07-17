@@ -70,6 +70,9 @@ def menu():
             localizzazione_persona()
             pass
 
+        case 4:
+            ricerca_per_luogo()
+
         case "q":
             print("Uscita dal programma in corso...")
             time.sleep(1)
@@ -148,7 +151,7 @@ def ricerca_user_sospetto():
     
     # input di dataora minima
     while True:
-        from_datehour = input("Inserisci la prima (YYYY-MM-DD HH:MM): ")
+        from_datehour = input("Inserisci data e ora da cui cercare (YYYY-MM-DD HH:MM): ")
 
         if from_datehour == "":
             return
@@ -160,7 +163,7 @@ def ricerca_user_sospetto():
 
     # input di dataora massima
     while True:
-        to_datehour = input("Inserisci la prima (YYYY-MM-DD HH:MM): ")
+        to_datehour = input("Inserisci data e ora a cui cercare (YYYY-MM-DD HH:MM): ")
 
         if to_datehour == "":
             return
@@ -194,21 +197,46 @@ def mostra_sospetti(records):
 
     input("Premi 'invio' per tornare al menu...")
 
+def is_valid_latitude(lat):
+    return -90 <= lat <= 90
+
+def is_valid_longitude(lon):
+    return -180 <= lon <= 180
+
+def get_valid_latitude_longitude():
+    while True:
+        try:
+            latitude = input("Inserisci latitudine (da -90 a 90): ")
+            longitude = input("Inserisci longitudine (da -180 a 180): ")
+
+            if is_valid_latitude(latitude) and is_valid_longitude(longitude):
+                return latitude, longitude
+            else:
+                print("Latitude o longitudine non valide. Riprova.")
+        except ValueError:
+            print("Input non valido. Inserisci dei numeri.")
+
 @schermata
-def localizzazione_persona():
-    nome = input("Inserisci il nome della persona: ")
-    data = input("Inserisci la data (YYYY-MM-DD): ")
-    ora = input("Inserisci l'ora (HH:MM): ")
-
-    records = cells_db.find_cells_by_person_and_time(nome, data, ora)
+def ricerca_per_luogo():
     
-    print(f"Elenco delle celle per {nome} alla data {data} e ora {ora}:\n")
-    for record in records:
-        print("------------------------------------------------")
-        for key in record.keys():
-            print(f"{key}: {record.get(key)}")
+    print("Interfaccia di ricerca per luogo\n\nLascia vuoto in qualsiasi momento per tornare al menu...")
 
-    input("Premi 'invio' per tornare al menu precedente...")
+    # input di luogo
+    latitude, longitude = get_valid_latitude_longitude()
+
+    # input di dataora minima
+    while True:
+        from_datehour = input("Inserisci data e ora da cui cercare (YYYY-MM-DD HH:MM): ")
+
+        if from_datehour == "":
+            return
+
+        if validate_datehour_format(from_datehour):
+            break
+        else:
+            print("Formato non valido.")
+
+
 
 
 if __name__ == '__main__':

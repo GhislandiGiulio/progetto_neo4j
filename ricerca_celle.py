@@ -136,23 +136,6 @@ def mostra_match(node_type):
 
     input("Premi 'invio' per tornare al menu precedente...")
 
-@schermata
-def mostra_utenti():
-
-    print("Elenco degli utenti:\n")
-
-    
-    records = cells_db.match_users()
-
-    for record in records:
-
-        print("------------------------------------------------")
-
-        for key in record.keys():
-            print(f"{key}: {record.get(key)}")
-
-    input("Premi 'invio' per tornare al menu precedente...")
-
 
 if __name__ == '__main__':
 

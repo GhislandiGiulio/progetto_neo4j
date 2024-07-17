@@ -67,7 +67,7 @@ def menu():
             pass
 
         case 3:
-            # ricerca
+            localizzazione_persona()
             pass
 
         case "q":
@@ -116,7 +116,7 @@ def mostra_match(node_type):
             records = cells_db.match_users()
     
     
-    print("Elenco di {tipologia}:\n")
+    print(f"Elenco di {node_type}:\n")
 
     for record in records:
 

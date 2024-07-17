@@ -187,7 +187,7 @@ def ricerca_user_sospetto():
 @schermata
 def mostra_sospetti(records):
     
-    print("Elenco delle connsessioni sospette:\n")
+    print("Elenco delle connessioni sospette:\n")
 
     for record in records:
         print("------------------------------------------------")
@@ -207,7 +207,17 @@ def get_valid_latitude_longitude():
     while True:
         try:
             latitude = input("Inserisci latitudine (da -90 a 90): ")
+
+            if latitude == "":
+                return "q", ""
+
             longitude = input("Inserisci longitudine (da -180 a 180): ")
+
+            if longitude == "":
+                return "q", ""
+            
+            latitude = float(latitude)
+            longitude = float(longitude)
 
             if is_valid_latitude(latitude) and is_valid_longitude(longitude):
                 return latitude, longitude
@@ -224,6 +234,10 @@ def ricerca_per_luogo():
     # input di luogo
     latitude, longitude = get_valid_latitude_longitude()
 
+    # logica per tornare al menu durante inserimento luogo
+    if latitude == "q" or longitude == "q":
+        return
+
     # input di dataora minima
     while True:
         from_datehour = input("Inserisci data e ora da cui cercare (YYYY-MM-DD HH:MM): ")
@@ -235,6 +249,26 @@ def ricerca_per_luogo():
             break
         else:
             print("Formato non valido.")
+
+    # input distanza entro la quale cercare
+    while True:
+        try:
+            distance = float(input("Inserisci distanza (in km): "))
+            break
+        except ValueError:
+            print("Input non valido. Inserisci un numero.")
+
+    # esecuzione query
+    records = cells_db.find_connection_near_location(latitude, longitude, from_datehour, distance)
+
+    # se trovati risultati, mostrali
+    if records == []:
+        print("Non sono stati trovati risultati.")
+        input("Premi 'invio' per tornare al menu...")
+    
+    mostra_sospetti(records)
+
+    
 
 
 

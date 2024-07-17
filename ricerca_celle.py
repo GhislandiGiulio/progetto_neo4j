@@ -76,8 +76,8 @@ def menu():
             exit(0)
 
         case "_":
-            # ricerca
-            pass
+            print("Opzione non valida")
+            input("Premi 'invio' per tornare al menu precedente...")
 
 @schermata
 def mostra_elenco():
@@ -193,6 +193,22 @@ def mostra_sospetti(records):
         print("\n")
 
     input("Premi 'invio' per tornare al menu...")
+
+@schermata
+def localizzazione_persona():
+    nome = input("Inserisci il nome della persona: ")
+    data = input("Inserisci la data (YYYY-MM-DD): ")
+    ora = input("Inserisci l'ora (HH:MM): ")
+
+    records = cells_db.find_cells_by_person_and_time(nome, data, ora)
+    
+    print(f"Elenco delle celle per {nome} alla data {data} e ora {ora}:\n")
+    for record in records:
+        print("------------------------------------------------")
+        for key in record.keys():
+            print(f"{key}: {record.get(key)}")
+
+    input("Premi 'invio' per tornare al menu precedente...")
 
 
 if __name__ == '__main__':

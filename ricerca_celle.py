@@ -236,7 +236,26 @@ def ricerca_per_luogo():
         else:
             print("Formato non valido.")
 
+@schermata
+def persone_nella_cella():
+    cell_id = input("A quale cella sei interessato? ")
+    data_ora = input("In quale data / orario? (YYYY-MM-DD HH:MM) ")
 
+    if not validate_datehour_format(data_ora):
+        print("Formato data/ora non valido.")
+        input("Premi 'invio' per tornare al menu precedente...")
+        return
+
+    records = cells_db.find_people_in_cell(cell_id, data_ora)
+    
+    if records:
+        print("Le SIM collegate alla cella sono:")
+        for record in records:
+            print(f"• {record['nome']} (con numero {record['numero']})")
+    else:
+        print("Nessuna SIM trovata nella cella per la data/ora specificata.")
+    
+    input("Premi 'invio' per tornare al menu precedente...")
 
 
 if __name__ == '__main__':

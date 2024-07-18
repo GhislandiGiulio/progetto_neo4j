@@ -26,8 +26,8 @@ class Cells_db:
         query =  """ MATCH (p:Cell) 
                     RETURN  p.id as id,
                             p.action_range as action_range, 
-                            p.latitude as latitude, 
-                            p.longitude as longitude,
+                            p.location.latitude as latitude, 
+                            p.location.longitude as longitude,
                             p.power as power"""
     
             

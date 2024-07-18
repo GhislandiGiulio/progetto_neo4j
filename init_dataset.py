@@ -66,8 +66,8 @@ def random_action_range():
     return random.uniform(0.1, 10.0) # in km
 
 def random_location():
-    latitude = random.uniform(-90.0, 90.0)
-    longitude = random.uniform(-180.0, 180.0)
+    latitude = random.uniform(44.0, 47.0)
+    longitude = random.uniform(7.0, 13.0)
     return [latitude, longitude]
 
 def random_birth_date():
